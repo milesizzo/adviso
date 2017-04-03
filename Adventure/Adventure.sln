@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adventure", "Adventure.csproj", "{B7F7D4CB-D65D-404C-A9E4-066767521AA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "..\..\engine2d\CommonLibrary\CommonLibrary.csproj", "{107C5647-A532-45D0-85A5-82BFB075D6C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameEngine", "..\..\engine2d\GameEngine\GameEngine.csproj", "{8B743043-F686-4B0D-B504-6E3DB6278747}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics MonoGame", "..\..\engine2d\FarseerPhysics\Farseer Physics MonoGame.csproj", "{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7F7D4CB-D65D-404C-A9E4-066767521AA7}.Debug|x64.ActiveCfg = Debug|x86
+		{B7F7D4CB-D65D-404C-A9E4-066767521AA7}.Debug|x86.ActiveCfg = Debug|x86
+		{B7F7D4CB-D65D-404C-A9E4-066767521AA7}.Debug|x86.Build.0 = Debug|x86
+		{B7F7D4CB-D65D-404C-A9E4-066767521AA7}.Release|x64.ActiveCfg = Release|x86
+		{B7F7D4CB-D65D-404C-A9E4-066767521AA7}.Release|x86.ActiveCfg = Release|x86
+		{B7F7D4CB-D65D-404C-A9E4-066767521AA7}.Release|x86.Build.0 = Release|x86
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x64.ActiveCfg = Debug|x64
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x64.Build.0 = Debug|x64
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x86.ActiveCfg = Debug|x86
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x86.Build.0 = Debug|x86
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|x64.ActiveCfg = Release|x64
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|x64.Build.0 = Release|x64
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|x86.ActiveCfg = Release|x86
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|x86.Build.0 = Release|x86
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Debug|x64.ActiveCfg = Debug|x64
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Debug|x64.Build.0 = Debug|x64
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Debug|x86.ActiveCfg = Debug|x86
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Debug|x86.Build.0 = Debug|x86
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Release|x64.ActiveCfg = Release|x64
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Release|x64.Build.0 = Release|x64
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Release|x86.ActiveCfg = Release|x86
+		{8B743043-F686-4B0D-B504-6E3DB6278747}.Release|x86.Build.0 = Release|x86
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Debug|x64.ActiveCfg = Debug|x64
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Debug|x64.Build.0 = Debug|x64
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Debug|x86.ActiveCfg = Debug|x86
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Debug|x86.Build.0 = Debug|x86
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Release|x64.ActiveCfg = Release|x64
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Release|x64.Build.0 = Release|x64
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Release|x86.ActiveCfg = Release|x86
+		{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
