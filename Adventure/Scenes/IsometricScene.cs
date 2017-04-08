@@ -73,8 +73,9 @@ namespace Adventure.Scenes
         //public int BaseOffsetY = -64;
         public int BaseOffsetX = 0;
         public int BaseOffsetY = 0;
-        public float HeightRowDepthMod = 0.0000001f;
+        public float HeightRowDepthMod = 0.000000001f;
         public readonly SpriteTemplate MouseMap;
+        public readonly HashSet<int> Impassable = new HashSet<int>();
 
         public SpriteSheetTemplate Tileset;
         public SpriteSheetTemplate SlopeMap;
@@ -226,38 +227,75 @@ namespace Adventure.Scenes
             return height;
         }
 
+        public Vector2 Project(Vector3 location)
+        {
+            //var angle = Math.PI / 6;
+            //var transform = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+            return new Vector2((location.X - location.Y) * 32, (((location.X + location.Y) * 16) - location.Z * this.Map.HeightTileOffset));
+        }
+
+        public Vector3 Unproject(Vector2 projected, float z)
+        {
+            // px = (x - y) * 32
+            // py = (x + y) * 16 - z * H
+
+            // x = px / 32 + y
+            // y = ((py + z * H) / 16 - px / 32) / 2
+            var y = ((projected.Y + z * this.Map.HeightTileOffset) / 16 - projected.X / 32) / 2;
+            var x = projected.X / 32 + y;
+            return new Vector3(x, y, z);
+        }
+
+        public float CalculateDepth(Vector3 location)
+        {
+            return (location.X + location.Y * this.Map.MapWidth) / (this.Map.MapWidth * this.Map.MapHeight) / 10f + (location.Z * 1.25f * this.Map.HeightRowDepthMod);
+        }
+
         public void Draw(Renderer renderer, GameTime gameTime)
         {
             //var font = this.Store.Fonts("Base", "debug");
             for (var y = 0; y < this.Map.Rows.Count; y++)
             {
-                var rowOffset = (y % 2 == 1) ? this.Map.OddRowXOffset : 0;
                 var row = this.Map.Rows[y];
                 for (var x = 0; x < row.Columns.Count; x++)
                 {
-                    var depthOffset = 0.7f - ((x + (y * this.Map.TileSizeX)) / this.Map.MaxDepth);
+                    //var depthOffset = 0.7f - ((x + (y * this.Map.TileSizeX)) / this.Map.MaxDepth);
+                    //var depthOffset = 0.7f - ((y / (float)this.Map.WorldHeight) / 10;
+                    //var depth = x + y;
+                    //var depthOffset = 0.7f - ((x * this.Map.TileStepX + (y * this.Map.TileStepY * this.Map.WorldWidth)) / (this.Map.WorldWidth * this.Map.WorldHeight * 10));
                     var cell = row.Columns[x];
-                    var basePos = new Vector2(x * this.Map.TileStepX + rowOffset + this.Map.BaseOffsetX, y * this.Map.TileStepY + this.Map.BaseOffsetY);
+                    //var basePos = new Vector2(x * this.Map.TileStepX + rowOffset + this.Map.BaseOffsetX, y * this.Map.TileStepY + this.Map.BaseOffsetY);
+                    var world = new Vector3(x, y, 0);
+                    var pos = this.Project(world);
+                    var depth = this.CalculateDepth(world);
+                    //var depth = (float)(x + y * this.Map.MapWidth) / (this.Map.MapWidth * this.Map.MapHeight) / 10;
                     foreach (var tile in cell.BaseTiles)
                     {
-                        this.Map.Tileset.Sprites[tile].DrawSprite(renderer.World, basePos, 1f);
+                        this.Map.Tileset.Sprites[tile].DrawSprite(renderer.World, pos, 1f);
                     }
+                    var z = 0f;
                     foreach (var tile in cell.HeightTiles)
                     {
-                        this.Map.Tileset.Sprites[tile].DrawSprite(
-                            renderer.World,
-                            basePos,
-                            depthOffset);
-                        basePos.Y -= this.Map.HeightTileOffset;
-                        depthOffset -= this.Map.HeightRowDepthMod * this.Map.HeightTileOffset;
+                        pos = this.Project(new Vector3(x, y, z));
+                        if (tile >= 0)
+                        {
+                            this.Map.Tileset.Sprites[tile].DrawSprite(
+                                renderer.World,
+                                pos,
+                                1f - depth);
+                        }
+                        z += 1;
+                        depth += 1.25f * this.Map.HeightRowDepthMod;
+                        //basePos.Y -= this.Map.HeightTileOffset;
+                        //depthOffset -= this.Map.HeightRowDepthMod * this.Map.HeightTileOffset;
                     }
                     //depthOffset += this.Map.HeightRowDepthMod * cell.HeightTiles.Count;
                     foreach (var tile in cell.TopperTiles)
                     {
                         this.Map.Tileset.Sprites[tile].DrawSprite(
                             renderer.World,
-                            basePos,
-                            depthOffset);
+                            pos,
+                            1f - depth);
                     }
                     /*font.DrawString(
                         renderer.World,
@@ -269,6 +307,7 @@ namespace Adventure.Scenes
             foreach (var obj in this.objects)
             {
                 obj.Draw(renderer, gameTime);
+                renderer.World.DrawCircle(this.Project(obj.Position3D), 3, 4, Color.White);
             }
         }
 
@@ -333,26 +372,27 @@ namespace Adventure.Scenes
 
             var animation = $"Idle{this.playerAnimation.Substring(4)}";
             var moveVector = Vector2.Zero;
-            var amount = elapsed * 40;
+            var amount = elapsed;
             if (keyboard.IsKeyDown(Keys.A))
             {
-                moveVector += new Vector2(-amount, 0);
+                moveVector += new Vector2(-1, +1);
             }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                moveVector += new Vector2(+amount, 0);
+                moveVector += new Vector2(+1, -1);
             }
             if (keyboard.IsKeyDown(Keys.W))
             {
-                moveVector += new Vector2(0, -amount);
+                moveVector += new Vector2(-1, -1);
             }
             if (keyboard.IsKeyDown(Keys.S))
             {
-                moveVector += new Vector2(0, +amount);
+                moveVector += new Vector2(+1, +1);
             }
             if (keyboard.IsKeyDown(Keys.LeftShift))
             {
-                moveVector *= 4;
+                //moveVector *= 4;
+                amount *= 4;
             }
             /*if (keyboard.IsKeyDown(Keys.Q))
             {
@@ -364,55 +404,75 @@ namespace Adventure.Scenes
             }*/
             if (moveVector.Length() != 0)
             {
+                moveVector.Normalize();
+                moveVector *= amount;
                 if (moveVector.X < 0)
                 {
                     if (moveVector.Y < 0)
                     {
-                        animation = "WalkNorthWest";
+                        animation = "WalkNorth";
                     }
                     else if (moveVector.Y > 0)
                     {
-                        animation = "WalkSouthWest";
+                        animation = "WalkWest";
                     }
                     else
                     {
-                        animation = "WalkWest";
+                        animation = "WalkNorthWest";
                     }
                 }
                 else if (moveVector.X > 0)
                 {
                     if (moveVector.Y < 0)
                     {
-                        animation = "WalkNorthEast";
+                        animation = "WalkEast";
                     }
                     else if (moveVector.Y > 0)
                     {
-                        animation = "WalkSouthEast";
+                        animation = "WalkSouth";
                     }
                     else
                     {
-                        animation = "WalkEast";
+                        animation = "WalkSouthEast";
                     }
                 }
                 else if (moveVector.Y < 0)
                 {
-                    animation = "WalkNorth";
+                    animation = "WalkNorthEast";
                 }
                 else if (moveVector.Y > 0)
                 {
-                    animation = "WalkSouth";
+                    animation = "WalkSouthWest";
                 }
-                this.player.Position = new Vector2(
-                    MathHelper.Clamp(this.player.Position.X + moveVector.X, this.Context.Map.TileSizeX, this.Context.Map.WorldWidth),
-                    MathHelper.Clamp(this.player.Position.Y + moveVector.Y, this.Context.Map.TileSizeY, this.Context.Map.WorldHeight));
+                /*
+                var newXPos = this.Context.Map.WorldToMapCell(this.player.Position + new Vector2(moveVector.X, 0));
+                var newYPos = this.Context.Map.WorldToMapCell(this.player.Position + new Vector2(0, moveVector.Y));
+                var newPos = this.Context.Map.WorldToMapCell(this.player.Position + moveVector);
+                var cellXPos = this.Context.Map.Rows[newXPos.Y].Columns[newXPos.Y];
+                var cellYPos = this.Context.Map.Rows[newYPos.Y].Columns[newYPos.Y];
+                var cellNewPos = this.Context.Map.Rows[newPos.Y].Columns[newPos.Y];
+                if (cellXPos.TopperTiles.Any(id => this.Context.Map.Impassable.Contains(id)))
+                {
+                    moveVector.X = 0;
+                }
+                if (cellYPos.TopperTiles.Any(id => this.Context.Map.Impassable.Contains(id)))
+                {
+                    moveVector.Y = 0;
+                }
+                */
+                this.player.Position3D = new Vector3(
+                    MathHelper.Clamp(this.player.Position3D.X + moveVector.X, 0, this.Context.Map.MapWidth),
+                    MathHelper.Clamp(this.player.Position3D.Y + moveVector.Y, 0, this.Context.Map.MapHeight),
+                    this.player.Position3D.Z);
             }
             if (animation != this.playerAnimation)
             {
                 this.playerAnimation = animation;
                 this.player.Sprite = this.PlayerAnimation(animation);
             }
-            this.Camera.LookAt(this.player.Position);
+            this.Camera.LookAt(this.Context.Project(this.player.Position3D));
 
+            /*
             var cameraOffset = Vector2.Zero;
             if (this.Camera.BoundingRectangle.Left < this.Context.Map.TileSizeX)
             {
@@ -434,6 +494,7 @@ namespace Adventure.Scenes
             {
                 this.Camera.Position += cameraOffset;
             }
+            */
         }
 
         private SpriteTemplate PlayerAnimation(string key)
@@ -481,17 +542,36 @@ namespace Adventure.Scenes
             this.Context.AddObject(this.player);
             */
             this.player = new IsoSprite(this.Context);
-            this.player.Position = new Vector2(100, 100);
+            this.player.Position3D = new Vector3(10, 10, 0);
             this.player.Sprite = this.PlayerAnimation("IdleNorth");
             this.Context.AddObject(this.player);
 
+            /*
             var tree = new IsoSprite(this.Context);
             tree.Position = new Vector2(900, 492);
             tree.Sprite = this.Store.Sprites<SingleSpriteTemplate>("Base", "tree1");
             this.Context.AddObject(tree);
 
+            var bush = new IsoSprite(this.Context);
+            bush.Position = new Vector2(1000, 492);
+            bush.Sprite = this.Store.Sprites<SingleSpriteTemplate>("Base", "bush1");
+            this.Context.AddObject(bush);
+            */
+
             this.Context.Map.Tileset = this.Store.Sprites<SpriteSheetTemplate>("Base", "forest_tiles");
             this.Context.Map.SlopeMap = this.Store.Sprites<SpriteSheetTemplate>("Base", "slope_tiles");
+
+            this.Context.Map.Impassable.UnionWith(new[]
+            {
+                50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+                60, 61, 62, 63, 64, 65, 69,
+                70,
+                80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+                90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
+                100, 101, 102,
+                119,
+                120, 121, 126, 127, 128, 129,
+            });
 
             // add some height objects
             this.Context.Map.Rows[16].Columns[4].HeightTiles.Add(54);
@@ -541,6 +621,17 @@ namespace Adventure.Scenes
             this.Context.Map.Rows[15].Columns[5].TopperTiles.Add(91);
             this.Context.Map.Rows[16].Columns[6].TopperTiles.Add(94);
 
+            // add some trees
+            /*
+            this.Context.Map.Rows[20].Columns[15].HeightTiles.Add(132);
+            this.Context.Map.Rows[20].Columns[15].HeightTiles.Add(-1);
+            this.Context.Map.Rows[20].Columns[15].HeightTiles.Add(122);
+
+            this.Context.Map.Rows[20].Columns[17].HeightTiles.Add(133);
+            this.Context.Map.Rows[20].Columns[17].HeightTiles.Add(-1);
+            this.Context.Map.Rows[20].Columns[17].HeightTiles.Add(123);
+            */
+
             var random = new Random();
             var map = this.Context.Map;
             for (var y = 0; y < map.MapHeight; y++)
@@ -586,6 +677,7 @@ namespace Adventure.Scenes
 
             var map = this.Context.Map;
 
+            /*
             var world = this.Camera.ScreenToWorld(Mouse.GetState().X, Mouse.GetState().Y);
             renderer.World.DrawPoint(world, Color.White);
             var highlightPos = map.WorldToMapCell(new Point((int)world.X, (int)world.Y));
@@ -596,14 +688,32 @@ namespace Adventure.Scenes
                 Color.White * 0.3f,
                 0,
                 Vector2.One);
+            */
+            var projected = this.Camera.ScreenToWorld(Mouse.GetState().X, Mouse.GetState().Y);
+            var world = this.Context.Unproject(projected, 0);
+            var tilePos = new Vector3((int)world.X, (int)world.Y, 0);
+            var tileProj = this.Context.Project(tilePos);
+            this.highlight.DrawSprite(renderer.World, tileProj, Color.White * 0.3f, 0, Vector2.One);
 
-            renderer.World.DrawCircle(this.player.Position, 5, 8, Color.White);
 
-            var playerMap = this.Context.Map.WorldToMapCell(new Point((int)this.player.Position.X, (int)this.player.Position.Y));
+            //var playerMap = this.Context.Map.WorldToMapCell(new Point((int)this.player.Position.X, (int)this.player.Position.Y));
+            var playerProjected = this.Context.Project(this.player.Position3D);
 
-            this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 0), $"Mouse: (world) {world} (map) {highlightPos}", Color.White);
-            this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 16), $"Player: (world) {this.player.Position} (map) {playerMap}", Color.White);
-            this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 32), $"Camera: (world) {this.Camera.Position} (origin) {this.Camera.Origin}", Color.White);
+            var text = new StringBuilder();
+            text.AppendLine($"Mouse:");
+            text.AppendLine($"  Projected: {projected}");
+            text.AppendLine($"      World: {world}");
+            //text.AppendLine($"       Tile: {tilePos}");
+            text.AppendLine($"Player:");
+            text.AppendLine($"  Projected: {playerProjected}");
+            text.AppendLine($"      World: {this.player.Position3D}");
+            text.AppendLine($"Camera:");
+            text.AppendLine($"  Projected: {this.Camera.Position}");
+            text.AppendLine($"     Origin: {this.Camera.Origin}");
+            this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 0), text.ToString(), Color.White);
+            //this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 0), $"Mouse: (projected) {projected}\n(world) {world} (map) {tilePos}", Color.White);
+            //this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 16), $"Player: (world) {this.player.Position3D} (projected) {playerProjected}", Color.White);
+            //this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 32), $"Camera: (world) {this.Camera.Position} (origin) {this.Camera.Origin}", Color.White);
         }
     }
 }

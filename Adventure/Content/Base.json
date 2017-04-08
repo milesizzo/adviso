@@ -130,7 +130,7 @@
       "name": "highlight",
       "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "origin": {
-        "x": 0.0,
+        "x": 32.0,
         "y": 0.0
       },
       "shape": {
@@ -161,8 +161,8 @@
       "name": "forest_tiles",
       "type": "GameEngine.Templates.SpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "origin": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 32.0,
+        "y": 32.0
       },
       "shape": {
         "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
@@ -195,8 +195,8 @@
       "name": "slope_tiles",
       "type": "GameEngine.Templates.SpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "origin": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 32.0,
+        "y": 32.0
       },
       "shape": {
         "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
@@ -373,6 +373,37 @@
         ]
       },
       "texture": "Objects/tree1"
+    },
+    {
+      "name": "bush1",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 28.0,
+        "y": 32.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 0.0,
+            "y": 0.0
+          },
+          {
+            "x": 57.0,
+            "y": 0.0
+          },
+          {
+            "x": 57.0,
+            "y": 48.0
+          },
+          {
+            "x": 0.0,
+            "y": 48.0
+          }
+        ]
+      },
+      "texture": "Objects/bush1"
     }
   ],
   "audio": [],
