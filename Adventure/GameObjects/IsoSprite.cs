@@ -1,27 +1,28 @@
 ﻿using GameEngine.GameObjects;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using GameEngine.Templates;
 using GameEngine.Graphics;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
+using Adventure.Scenes;
 
 namespace Adventure.GameObjects
 {
     public class IsoSprite : AbstractObject
     {
-        private const float TileSizeX = 32;
-        private const float TileSizeY = 16;
         private Vector2 position;
-        public float Height;
-        public SpriteTemplate Sprite;
+        private float frame;
+        private SpriteTemplate sprite;
 
         public IsoSprite(IGameContext context) : base(context)
         {
             //
+        }
+
+        public new IsometricContext Context
+        {
+            get { return base.Context as IsometricContext; }
         }
 
         public override Vector2 Position
@@ -30,16 +31,43 @@ namespace Adventure.GameObjects
             set { this.position = value; }
         }
 
+        public SpriteTemplate Sprite
+        {
+            get { return this.sprite; }
+            set { this.sprite = value; }
+        }
+
+        public float Height
+        {
+            get { return this.Context.GetHeight(this.Position); }
+        }
+
         public float IsoDepth
         {
             get { return this.position.X + this.position.Y; }
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Update(GameTime gameTime)
         {
-            var x = (this.position.X - this.position.Y) * TileSizeX / 2;
-            var y = (this.position.X + this.position.Y - this.Height) * TileSizeY / 2;
-            this.Sprite.DrawSprite(renderer.World, new Vector2(x, y), Color.White, 0, Vector2.One, SpriteEffects.None);
+            base.Update(gameTime);
+        }
+
+        public override void Draw(Renderer renderer, GameTime gameTime)
+        {
+            this.frame += gameTime.GetElapsedSeconds() * this.Sprite.FPS;
+            var intFrame = (int)Math.Floor(this.frame);
+            if (intFrame >= this.Sprite.NumberOfFrames)
+            {
+                intFrame = 0;
+                this.frame = 0;
+            }
+
+            var height = this.Height;
+            var pos = this.Context.Map.WorldToMapCell(this.Position);
+            var depthOffset = 0.7f - ((pos.X + (pos.Y * this.Context.Map.TileSizeX + height)) / this.Context.Map.MaxDepth);
+            //depthOffset -= this.Context.Map.HeightRowDepthMod * (this.Context.Map.Rows[pos.Y].Columns[pos.X].HeightTiles.Count * this.Context.Map.HeightTileOffset + height);
+
+            this.Sprite.DrawSprite(renderer.World, intFrame, this.position + new Vector2(0, -height), Color.White, 0, Vector2.One, SpriteEffects.None, depthOffset);
         }
     }
 }
