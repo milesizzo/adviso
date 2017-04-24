@@ -195,8 +195,8 @@
       "name": "slope_tiles",
       "type": "GameEngine.Templates.SpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "origin": {
-        "x": 32.0,
-        "y": 32.0
+        "x": 0.0,
+        "y": 0.0
       },
       "shape": {
         "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
@@ -230,7 +230,7 @@
       "type": "GameEngine.Templates.NamedAnimatedSpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "origin": {
         "x": 24.0,
-        "y": 42.0
+        "y": 38.0
       },
       "shape": {
         "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
@@ -379,7 +379,7 @@
       "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "origin": {
         "x": 28.0,
-        "y": 32.0
+        "y": 40.0
       },
       "shape": {
         "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
@@ -404,6 +404,68 @@
         ]
       },
       "texture": "Objects/bush1"
+    },
+    {
+      "name": "house1",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 120.0,
+        "y": 148.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 0.0,
+            "y": 0.0
+          },
+          {
+            "x": 256.0,
+            "y": 0.0
+          },
+          {
+            "x": 256.0,
+            "y": 182.0
+          },
+          {
+            "x": 0.0,
+            "y": 182.0
+          }
+        ]
+      },
+      "texture": "Objects/house1"
+    },
+    {
+      "name": "tower1",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 128.0,
+        "y": 96.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 0.0,
+            "y": 0.0
+          },
+          {
+            "x": 256.0,
+            "y": 0.0
+          },
+          {
+            "x": 256.0,
+            "y": 182.0
+          },
+          {
+            "x": 0.0,
+            "y": 182.0
+          }
+        ]
+      },
+      "texture": "Objects/tower1"
     }
   ],
   "audio": [],
