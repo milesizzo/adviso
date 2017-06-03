@@ -158,7 +158,7 @@ namespace Adventure.GameObjects
     {
         //private Vector3 position;
         private float frame;
-        private SpriteTemplate sprite;
+        private ISpriteTemplate sprite;
         public AABB Bounds;
 
         public IsoSprite(IGameContext context) : base(context)
@@ -183,7 +183,7 @@ namespace Adventure.GameObjects
             set { this.Bounds.Position = value; }
         }
         
-        public SpriteTemplate Sprite
+        public ISpriteTemplate Sprite
         {
             get { return this.sprite; }
             set { this.sprite = value; }

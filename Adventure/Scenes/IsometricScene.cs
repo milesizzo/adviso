@@ -141,17 +141,13 @@ namespace Adventure.Scenes
     {
         public readonly TileMap Map;
         private readonly List<IGameObject> objects = new List<IGameObject>();
-        private readonly Store store;
 
-        public IsometricContext(Store store)
+        public IsometricContext()
         {
             this.Map = new TileMap(50, 50, 10);
-            this.store = store;
         }
 
         public IEnumerable<IGameObject> Objects { get { return this.objects; } }
-
-        public Store Store { get { return this.store; } }
 
         public void AddObject(IGameObject obj)
         {
@@ -296,14 +292,14 @@ namespace Adventure.Scenes
         private IsoSprite player;
         private SpriteTemplate highlight;
 
-        public IsometricScene(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
+        public IsometricScene(string name, GraphicsDevice graphics) : base(name, graphics)
         {
             //
         }
 
         protected override IsometricContext CreateContext()
         {
-            return new IsometricContext(this.Store);
+            return new IsometricContext();
         }
 
         public override void Update(GameTime gameTime)
@@ -457,10 +453,10 @@ namespace Adventure.Scenes
             */
         }
 
-        private SpriteTemplate PlayerAnimation(string key)
+        private ISpriteTemplate PlayerAnimation(string key)
         {
             this.playerAnimation = key;
-            return this.Store.Sprites<NamedAnimatedSpriteSheetTemplate>("Base", "player").GetAnimation(key);
+            return Store.Instance.Sprites<NamedAnimatedSpriteSheetTemplate>("Base", "player").GetAnimation(key);
         }
 
         public override void SetUp()
@@ -511,27 +507,27 @@ namespace Adventure.Scenes
             {
                 var tree = new IsoSprite(this.Context);
                 tree.Position3D = new Vector3((float)random.NextDouble() * this.Context.Map.MaxX, (float)random.NextDouble() * this.Context.Map.MaxY, 0);
-                tree.Sprite = this.Store.Sprites<SingleSpriteTemplate>("Base", "tree1");
+                tree.Sprite = Store.Instance.Sprites<SingleSpriteTemplate>("Base", "tree1");
                 this.Context.AddObject(tree);
             }
 
             var bush = new IsoSprite(this.Context);
             bush.Position3D = new Vector3(20, 30, 0);
-            bush.Sprite = this.Store.Sprites<SingleSpriteTemplate>("Base", "bush1");
+            bush.Sprite = Store.Instance.Sprites<SingleSpriteTemplate>("Base", "bush1");
             this.Context.AddObject(bush);
 
             var house = new IsoSprite(this.Context);
             house.Position3D = new Vector3(40, 30, 0);
-            house.Sprite = this.Store.Sprites<SingleSpriteTemplate>("Base", "house1");
+            house.Sprite = Store.Instance.Sprites<SingleSpriteTemplate>("Base", "house1");
             this.Context.AddObject(house);
 
             var tower = new IsoSprite(this.Context);
             tower.Position3D = new Vector3(40, 34, 0);
-            tower.Sprite = this.Store.Sprites<SingleSpriteTemplate>("Base", "tower1");
+            tower.Sprite = Store.Instance.Sprites<SingleSpriteTemplate>("Base", "tower1");
             this.Context.AddObject(tower);
 
-            this.Context.Map.Tileset = this.Store.Sprites<SpriteSheetTemplate>("Base", "forest_tiles");
-            this.Context.Map.SlopeMap = this.Store.Sprites<SpriteSheetTemplate>("Base", "slope_tiles");
+            this.Context.Map.Tileset = Store.Instance.Sprites<SpriteSheetTemplate>("Base", "forest_tiles");
+            this.Context.Map.SlopeMap = Store.Instance.Sprites<SpriteSheetTemplate>("Base", "slope_tiles");
 
             this.Context.Map.Impassable.UnionWith(new[]
             {
@@ -649,10 +645,10 @@ namespace Adventure.Scenes
                 */
 
             this.Camera.LookAt(new Vector2(0, 0));
-            this.Camera.Zoom = 1f;
+            this.Camera.Zoom = 2f;
             //this.Camera.SamplerState = SamplerState.PointClamp;
 
-            this.highlight = this.Store.Sprites<SpriteTemplate>("Base", "highlight");
+            this.highlight = Store.Instance.Sprites<SpriteTemplate>("Base", "highlight");
         }
 
         public override void PreDraw(Renderer renderer)
@@ -703,7 +699,7 @@ namespace Adventure.Scenes
             text.AppendLine($"Camera:");
             text.AppendLine($"  Projected: {this.Camera.Position}");
             text.AppendLine($"     Origin: {this.Camera.Origin}");
-            this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 0), text.ToString(), Color.White);
+            Store.Instance.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 0), text.ToString(), Color.White);
             //this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 0), $"Mouse: (projected) {projected}\n(world) {world} (map) {tilePos}", Color.White);
             //this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 16), $"Player: (world) {this.player.Position3D} (projected) {playerProjected}", Color.White);
             //this.Store.Fonts("Base", "debug").DrawString(renderer.Screen, new Vector2(0, 32), $"Camera: (world) {this.Camera.Position} (origin) {this.Camera.Origin}", Color.White);

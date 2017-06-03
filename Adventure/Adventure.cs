@@ -1,5 +1,6 @@
 ﻿using Adventure.Scenes;
 using GameEngine;
+using GameEngine.Content;
 using GameEngine.Graphics;
 using GameEngine.Scenes;
 using Microsoft.Xna.Framework;
@@ -36,10 +37,10 @@ namespace Adventure
         /// </summary>
         protected override void LoadContent()
         {
-            this.Store.LoadFromJson("Content\\Base.json");
+            Store.Instance.LoadFromJson("Content\\Base.json");
             this.Scenes.GetOrAdd<IScene>("Main", (key) =>
             {
-                return new IsometricScene(key, this.GraphicsDevice, this.Store);
+                return new IsometricScene(key, this.GraphicsDevice);
             });
             this.SetCurrentScene("Main");
         }
@@ -70,7 +71,7 @@ namespace Adventure
 
         protected override void Draw(Renderer renderer)
         {
-            var font = this.Store.Fonts("Base", "debug");
+            var font = Store.Instance.Fonts("Base", "debug");
             renderer.Screen.DrawString(font.Font, string.Format("FPS: {0:0.0}", this.FPS), new Vector2(1024, 10), Color.White);
 
             base.Draw(renderer);
